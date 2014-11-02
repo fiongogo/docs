@@ -46,3 +46,12 @@ Windows 7中添加msys路径
 1)在系统环境变量中新建MSYS指向解压缩的mingw文件夹（bin的上一级）; 
 2)在path变量中追加;%MSYS%\bin 
 3)升级msys版本时，只需要修改MSYS变量，指向新文件夹即可。
+
+#相关错误
+“launch failed.Binary not found”
+http://bbs.csdn.net/topics/260061684
+1、安装minGW先 ；
+2、添加path系统环境变量为minGw\bin目录；
+3、更改**—make.exe为make.exe；
+4、编写程序源文件然后编译ctrl+B；
+5、最后就可以运行了。
