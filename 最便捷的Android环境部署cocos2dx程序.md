@@ -158,3 +158,38 @@ Andriod.mk的import 原则$(call import-module,模块名) 这里的模块名必�
 http://www.cnblogs.com/ybgame/archive/2012/06/07/2540693.html
 
 发文时, Andriod Studio已经发布了一段时间, 虽然是测试版, 但将代表未来更方便的Andriod发布工具
+
+eclipse下编译cocos2dx 3.0
+
+先给自己科普一下, android sdk 是给java开发者用的,  咱C++开发者用的是android ndk, 所以就是使用ndk来编译cocos2dx程序了
+
+使用命令行创建一个项目, 我这里创建的是一个lua项目:cocos new lua_proj2 -p com.company_name.program_name -l lua -d d:\xxx\xxx
+此时创建了一个DEMO程序, 此时就可以使用cocos命令生成一个apk包, 进入到目录lua_proj2\frameworks\runtime-src下面,  在此目录下面执行命令cocos compile -p android 就会生成一个apk包, 把这个拖到genymotion上面, 就安装跑起来了. 
+上面说的是不使用eclipse的方式来生成一个apk包,  下面记录一下在eclipse中加载lua_proj2这个项目, 并生成apk包的过程.   为什么一定要将cocos2dx项目导入到eclipse中来生成apk包呢, 因为在eclipse中可以连接AVD来调试android程序,  再者, eclipse可以运行在linux环境下面, 后面我打算在linux进行开发, 所以这一步是一定要跨出去的
+
+打开eclipse, 加载lua_proj2项目, 在此注意一下, 不需要加载libcocos2dx这个项目, 只要加载lua_proj2这个自己新建一项目即可
+在eclipse中右击lua_proj2 -> Properties.  出现Properties for  lua_proj2框框
+
+
+创建一个新的builder
+
+
+
+第一个红框是builder名称, 随便填写, 第二个红框框是NDK生成工具, 即, 使用此工具来编译C++项目, 第三个红框框是工作目录, 此处我使用lua_proj2项目目录作为工作目录, 切换到Environment选项卡, 新建一个在此生成器中使用的环境变量NDK_MODULE_PATH, 值是......\lua_proj2\frameworks\cocos2d-x\cocos;......\lua_proj2\frameworks\cocos2d-x;......\lua_proj2\frameworks\cocos2d-x\external,  前面的.......是绝对目录的省略, 这里要输入绝对路径名称,  在此我就不写绝对路径了.
+
+
+
+一路OK下去, 到下面这个画面
+
+
+
+这个就新建立的builder, Project->Build Project  
+
+出现大量的error: 'override' does not name a type错误, 这是由于NDK的版本太低了,  override是C++11中才有的关键字, 而到NDKr10才支持C++11, 所以要升级NDK. 到官网去下载吧http://developer.android.com/tools/sdk/ndk/index.html#Installing
+不大, 400多M的样子, 更新完成之后, 看一下ndk\toolchains目录下面的编译器, 我的目录是下面这样子的
+
+我很想使用clang来编译, 但是现阶段我还不会配置, 就用GCC吧, x86-4.6  & x86-4.8两个版本的GCC, 4.8的支持C++11
+在Application.mk中添加一句NDK_TOOLCHAIN_VERSION = 4.8 就是指定使用GCC4.8来编译cocos2dx项目, 跑起来了, 下面是eclipse跑起来的console输出
+
+跟命令行下执行cocos compile -p android 跑出来的是一样的,  都是在编译程序.  下面进入到在eclipse下面调试程序
+ 
